@@ -1,0 +1,75 @@
+openapi: 3.0.1
+info:
+  title: Keeper Service API
+  description: Keeper Service is used to work with Products
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8081/api/v1/'
+
+paths:
+
+  /products:
+
+    get:
+      summary: Returns all products
+      responses:
+        '200':
+          description: Successfully returned products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - ProductController
+
+    put:
+      summary: Adds the product
+      responses:
+        '200':
+          description: Successfully added product
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+        - ProductController
+
+  /products/{productId}:
+
+    get:
+      summary: Returns the product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned product
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+        - ProductController
+
+    delete:
+      summary: Deletes the product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully deleted product
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - ProductController
