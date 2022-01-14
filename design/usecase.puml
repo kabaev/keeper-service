@@ -1,0 +1,37 @@
+@startuml
+
+skinparam actorStyle awesome
+left to right direction
+
+actor manager
+
+rectangle "External" {
+    actor "customer-service" as cs
+}
+
+rectangle "Keeper Service" {
+  usecase "get product by id" as uc01
+  usecase "get all products" as uc02
+  usecase "get products by code" as uc03
+  usecase "add product" as uc04
+  usecase "add list of products" as uc05
+  usecase "update product by id" as uc06
+  usecase "update products by code" as uc07
+  usecase "remove product by id" as uc08
+  usecase "remove products by code" as uc09
+  usecase "remove list of products" as uc10
+}
+
+manager --> uc01
+manager --> uc02
+manager --> uc03
+manager --> uc04
+manager --> uc05
+manager --> uc06
+manager --> uc07
+manager --> uc08
+manager --> uc09
+manager --> uc10
+cs --> uc10
+
+@enduml

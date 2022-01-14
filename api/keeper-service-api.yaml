@@ -24,8 +24,15 @@ paths:
       tags:
         - ProductController
 
-    put:
+    post:
       summary: Adds the product
+      parameters:
+        - name: product
+          description: The product to add
+          in: query
+          required: true
+          schema:
+            type: object
       responses:
         '200':
           description: Successfully added product
@@ -39,7 +46,7 @@ paths:
   /products/{productId}:
 
     get:
-      summary: Returns the product
+      summary: Returns the product with given productId
       parameters:
         - name: productId
           in: path
@@ -57,7 +64,7 @@ paths:
         - ProductController
 
     delete:
-      summary: Deletes the product
+      summary: Deletes the product with given productId
       parameters:
         - name: productId
           in: path
@@ -67,6 +74,136 @@ paths:
       responses:
         '200':
           description: Successfully deleted product
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - ProductController
+
+    put:
+      summary: Updates the product with given productId
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully updated product
+          content:
+            application/json:
+              schema:
+                type: object
+      tags:
+        - ProductController
+
+  /products/{productCode}:
+
+    get:
+      summary: Returns list of products with given productCode
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - ProductController
+
+    delete:
+      summary: Deletes list of products with given productCode
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully deleted list of products
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - ProductController
+
+    put:
+      summary: Updates list of products with given productCode
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: product
+          description: The product to update
+          in: query
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: Successfully updated list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - ProductController
+
+  /products/list:
+
+    post:
+      summary: Adds list of products
+      parameters:
+        - name: productList
+          description: The list of products to add
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+      responses:
+        '200':
+          description: Successfully added list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+      tags:
+        - ProductController
+
+    delete:
+      summary: Deletes list of products
+      parameters:
+        - name: productList
+          description: The list of products to delete
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+      responses:
+        '200':
+          description: Successfully deleted list of products
           content:
             application/json:
               schema:
