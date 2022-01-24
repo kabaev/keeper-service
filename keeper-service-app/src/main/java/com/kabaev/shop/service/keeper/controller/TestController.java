@@ -17,7 +17,7 @@ public class TestController {
      */
     @GetMapping("/{name}")
     public String getGreeting(@PathVariable("name") String name) {
-        return String.format("Greet, %s, from the keeper-service!", name);
+        return String.format("Good day, %s, from the keeper-service!", name);
     }
 
 }
