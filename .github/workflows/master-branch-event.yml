@@ -35,10 +35,13 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           chmod +x mvnw
-          ./mvnw compile -pl :keeper-service-app
-          ./mvnw jib:dockerBuild -pl keeper-service-app -Djib.to.image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          ./mvnw spring-boot:build-image -pl keeper-service-app \ 
+          -Dspring-boot.build-image.imageName=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
           npm install -g aws-cdk
           cd keeper-service-infrastructure
-          cdk deploy --parameters ecrKeeperRepoName=$ECR_REPOSITORY --parameters imageTagName=$IMAGE_TAG --require-approval never
+          cdk deploy \ 
+          --parameters ecrKeeperRepoName=$ECR_REPOSITORY \ 
+          --parameters imageTagName=$IMAGE_TAG \ 
+          --require-approval never

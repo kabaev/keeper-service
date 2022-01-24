@@ -24,8 +24,9 @@ public class KeeperServiceInfrastructureStack extends Stack {
         CfnParameter imageTagName = CfnParameter.Builder.create(this, "imageTagName")
                 .build();
 
-        Vpc vpc = Vpc.Builder.create(this, "MyVpc")
+        Vpc vpc = Vpc.Builder.create(this, "VPC")
                 .maxAzs(3)
+                .subnetConfiguration(Vpc.DEFAULT_SUBNETS_NO_NAT)
                 .build();
 
         Cluster cluster = Cluster.Builder.create(this, "MyCluster")
