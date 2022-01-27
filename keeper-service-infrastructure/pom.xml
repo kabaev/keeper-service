@@ -36,7 +36,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <mainClass>com.myorg.KeeperServiceInfrastructureApp</mainClass>
+                    <mainClass>com.kabaev.shop.service.keeper.infrastructure.KeeperServiceInfrastructureApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

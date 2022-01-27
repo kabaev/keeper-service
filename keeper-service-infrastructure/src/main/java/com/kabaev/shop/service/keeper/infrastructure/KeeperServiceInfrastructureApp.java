@@ -1,4 +1,4 @@
-package com.myorg;
+package com.kabaev.shop.service.keeper.infrastructure;
 
 import software.amazon.awscdk.App;
 import software.amazon.awscdk.StackProps;
