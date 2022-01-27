@@ -1,4 +1,4 @@
-package com.myorg;
+package com.kabaev.shop.service.keeper.infrastructure;
 
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.*;
