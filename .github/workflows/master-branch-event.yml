@@ -40,4 +40,6 @@ jobs:
           
           npm install -g aws-cdk
           cd keeper-service-infrastructure
-          cdk deploy --parameters ecrKeeperRepoName=$ECR_REPOSITORY --parameters imageTagName=$IMAGE_TAG --require-approval never
+          cdk deploy networkStack
+          cdk deploy dataStack
+          cdk deploy serviceStack --parameters ecrKeeperRepoName=$ECR_REPOSITORY --parameters imageTagName=$IMAGE_TAG --require-approval never
