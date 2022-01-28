@@ -3,6 +3,8 @@ package com.kabaev.shop.service.keeper.infrastructure;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.rds.*;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.secretsmanager.ISecret;
 import software.constructs.Construct;
 
@@ -11,6 +13,7 @@ public class DataStack extends Stack {
     private final IDatabaseInstance postgres;
     private final ISecret keeperDatabaseUserSecret;
     private final CfnParameter keeperDatabaseName;
+    private final IBucket imagesStoreBucket;
 
     public DataStack(
             final Construct scope,
@@ -58,6 +61,18 @@ public class DataStack extends Stack {
                 .build();
 
         postgres.getConnections().allowFromAnyIpv4(Port.tcp(DATABASE_PORT), "Allow connections to the database");
+
+        imagesStoreBucket = Bucket.Builder.create(this, "imagesStoreBucket")
+                .versioned(false)
+                .publicReadAccess(true)
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .autoDeleteObjects(true)
+                .build();
+
+        CfnOutput.Builder.create(this, "imagesStoreBucketName")
+                .description("Bucket containing images of products")
+                .value(imagesStoreBucket.getBucketName())
+                .build();
     }
 
     public IDatabaseInstance getPostgres() {
@@ -70,6 +85,10 @@ public class DataStack extends Stack {
 
     public CfnParameter getKeeperDatabaseName() {
         return keeperDatabaseName;
+    }
+
+    public IBucket getImagesStoreBucket() {
+        return imagesStoreBucket;
     }
 
 }
