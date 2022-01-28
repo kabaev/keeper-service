@@ -3,6 +3,8 @@ package com.kabaev.shop.service.keeper.infrastructure;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.services.rds.*;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.secretsmanager.ISecret;
 import software.constructs.Construct;
 
@@ -11,6 +13,8 @@ public class DataStack extends Stack {
     private final IDatabaseInstance postgres;
     private final ISecret keeperDatabaseUserSecret;
     private final CfnParameter keeperDatabaseName;
+    private final IBucket imageBucket;
+    private final IBucket rdsBucket;
 
     public DataStack(
             final Construct scope,
@@ -58,6 +62,30 @@ public class DataStack extends Stack {
                 .build();
 
         postgres.getConnections().allowFromAnyIpv4(Port.tcp(DATABASE_PORT), "Allow connections to the database");
+
+        imageBucket = Bucket.Builder.create(this, "imageBucket")
+                .versioned(false)
+                .publicReadAccess(true)
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .autoDeleteObjects(true)
+                .build();
+
+        CfnOutput.Builder.create(this, "imageBucketName")
+                .description("Bucket containing images of products")
+                .value(imageBucket.getBucketName())
+                .build();
+
+        rdsBucket = Bucket.Builder.create(this, "rdsBucket")
+                .versioned(false)
+                .publicReadAccess(true)
+                .removalPolicy(RemovalPolicy.RETAIN)
+                .autoDeleteObjects(false)
+                .build();
+
+        CfnOutput.Builder.create(this, "rdsBucketName")
+                .description("Bucket containing snapshot of the RDS database")
+                .value(rdsBucket.getBucketName())
+                .build();
     }
 
     public IDatabaseInstance getPostgres() {
@@ -70,6 +98,14 @@ public class DataStack extends Stack {
 
     public CfnParameter getKeeperDatabaseName() {
         return keeperDatabaseName;
+    }
+
+    public IBucket getImageBucket() {
+        return imageBucket;
+    }
+
+    public IBucket getRdsBucket() {
+        return rdsBucket;
     }
 
 }

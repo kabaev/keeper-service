@@ -44,6 +44,9 @@ public class ServiceStack extends Stack {
                 .assumedBy(ServicePrincipal.Builder.create("ecs-tasks.amazonaws.com").build())
                 .build();
 
+        dataStack.getImageBucket().grantReadWrite(taskRole);
+        dataStack.getRdsBucket().grantReadWrite(taskRole);
+
         ApplicationLoadBalancedFargateService.Builder.create(this, "keeperServiceFargate")
                 .cluster(cluster)
                 .assignPublicIp(true)
