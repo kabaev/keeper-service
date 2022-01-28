@@ -24,6 +24,7 @@ public class ProductController {
                         new Product("Max")
                 )
         );
+
         return productService.getAllProducts();
     }
 
