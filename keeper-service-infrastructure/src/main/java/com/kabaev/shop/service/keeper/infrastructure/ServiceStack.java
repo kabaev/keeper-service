@@ -44,6 +44,8 @@ public class ServiceStack extends Stack {
                 .assumedBy(ServicePrincipal.Builder.create("ecs-tasks.amazonaws.com").build())
                 .build();
 
+        dataStack.getImagesStoreBucket().grantReadWrite(taskRole);
+
         ApplicationLoadBalancedFargateService.Builder.create(this, "keeperServiceFargate")
                 .cluster(cluster)
                 .assignPublicIp(true)
@@ -57,7 +59,9 @@ public class ServiceStack extends Stack {
                                 .environment(Map.of(
                                         "POSTGRES_HOST", dataStack.getPostgres().getDbInstanceEndpointAddress(),
                                         "POSTGRES_PORT", dataStack.getPostgres().getDbInstanceEndpointPort(),
-                                        "POSTGRES_DATABASE", dataStack.getKeeperDatabaseName().getValueAsString()
+                                        "POSTGRES_DATABASE", dataStack.getKeeperDatabaseName().getValueAsString(),
+                                        "S3_REGION_NAME", getRegion(),
+                                        "S3_BUCKET_NAME", dataStack.getImagesStoreBucket().getBucketName()
                                 ))
                                 .secrets(Map.of(
                                         "POSTGRES_USER", Secret.fromSecretsManager(dataStack.getKeeperDatabaseUserSecret(), "username"),
