@@ -45,6 +45,7 @@ public class ServiceStack extends Stack {
                 .build();
 
         dataStack.getImagesStoreBucket().grantReadWrite(taskRole);
+        dataStack.getTopic().grantPublish(taskRole);
 
         ApplicationLoadBalancedFargateService.Builder.create(this, "keeperServiceFargate")
                 .cluster(cluster)
@@ -61,7 +62,8 @@ public class ServiceStack extends Stack {
                                         "POSTGRES_PORT", dataStack.getPostgres().getDbInstanceEndpointPort(),
                                         "POSTGRES_DATABASE", dataStack.getKeeperDatabaseName().getValueAsString(),
                                         "S3_REGION_NAME", getRegion(),
-                                        "S3_BUCKET_NAME", dataStack.getImagesStoreBucket().getBucketName()
+                                        "S3_BUCKET_NAME", dataStack.getImagesStoreBucket().getBucketName(),
+                                        "SNS_TOPIC_ARN", dataStack.getTopic().getTopicArn()
                                 ))
                                 .secrets(Map.of(
                                         "POSTGRES_USER", Secret.fromSecretsManager(dataStack.getKeeperDatabaseUserSecret(), "username"),
