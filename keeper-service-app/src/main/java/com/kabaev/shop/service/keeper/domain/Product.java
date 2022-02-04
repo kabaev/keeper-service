@@ -4,12 +4,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@ToString
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+//@ToString
+//@Getter
+//@Setter
+//@EqualsAndHashCode
+//@NoArgsConstructor
+//@AllArgsConstructor
+@Data
 @Entity
 @Table
 public class Product {

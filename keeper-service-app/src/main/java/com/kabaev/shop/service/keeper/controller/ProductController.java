@@ -10,6 +10,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.sns.SnsClient;
 
 import java.util.List;
 
@@ -19,14 +20,17 @@ public class ProductController {
 
     private final ProductService productService;
     private final String bucketName;
+    private final String topicArn;
     private final String regionName;
 
     public ProductController(
             ProductService productService,
             @Value("${s3.bucket.name}") String bucketName,
+            @Value("${sns.topic.arn}") String topicArn,
             @Value("${s3.region.name}") String regionName) {
         this.productService = productService;
         this.bucketName = bucketName;
+        this.topicArn = topicArn;
         this.regionName = regionName;
     }
 
@@ -44,8 +48,6 @@ public class ProductController {
 
     @GetMapping("/s3")
     public String addToS3() {
-        System.out.println(bucketName);
-        System.out.println(regionName);
         Region region = Region.of(regionName);
         S3Client s3 = S3Client.builder()
                 .region(region)
@@ -54,10 +56,18 @@ public class ProductController {
                 .bucket(bucketName)
                 .key("k234k234l23j4j234lj24")
                 .build();
-
         s3.putObject(objectRequest, RequestBody.fromString("some content"));
+        return "DONE";
+    }
 
-        return "added";
+    @GetMapping("/sns")
+    public String addToTopic() {
+        Region region = Region.of(regionName);
+        SnsClient snsClient = SnsClient.builder()
+                .region(region)
+                .build();
+        productService.pubTopic(snsClient, "Hello World", topicArn);
+        return "DONE";
     }
 
 }
