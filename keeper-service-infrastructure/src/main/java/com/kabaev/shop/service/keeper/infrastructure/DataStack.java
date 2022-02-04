@@ -6,6 +6,10 @@ import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.secretsmanager.ISecret;
+import software.amazon.awscdk.services.sns.ITopic;
+import software.amazon.awscdk.services.sns.Topic;
+import software.amazon.awscdk.services.sns.subscriptions.SqsSubscription;
+import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
 public class DataStack extends Stack {
@@ -14,6 +18,7 @@ public class DataStack extends Stack {
     private final ISecret keeperDatabaseUserSecret;
     private final CfnParameter keeperDatabaseName;
     private final IBucket imagesStoreBucket;
+    private final ITopic topic;
 
     public DataStack(
             final Construct scope,
@@ -73,6 +78,11 @@ public class DataStack extends Stack {
                 .description("Bucket containing images of products")
                 .value(imagesStoreBucket.getBucketName())
                 .build();
+
+        topic = Topic.Builder.create(this, "productTopic")
+                .fifo(true)
+                .topicName("productTopic")
+                .build();
     }
 
     public IDatabaseInstance getPostgres() {
@@ -91,4 +101,7 @@ public class DataStack extends Stack {
         return imagesStoreBucket;
     }
 
+    public ITopic getTopic() {
+        return topic;
+    }
 }
