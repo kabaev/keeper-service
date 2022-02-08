@@ -1,16 +1,12 @@
 package com.kabaev.shop.service.keeper.domain;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-//@ToString
-//@Getter
-//@Setter
-//@EqualsAndHashCode
-//@NoArgsConstructor
-//@AllArgsConstructor
 @Data
+@NoArgsConstructor
 @Entity
 @Table
 public class Product {
@@ -21,14 +17,13 @@ public class Product {
             sequenceName = "product_sequence"
     )
     @GeneratedValue(
-            generator = "student_sequence",
+            generator = "product_sequence",
             strategy = GenerationType.SEQUENCE
     )
     private Long id;
+    private String code;
     private String name;
-
-    public Product(String name) {
-        this.name = name;
-    }
+    private String description;
+    private String imageUrl;
 
 }
