@@ -8,8 +8,6 @@ import software.amazon.awscdk.services.s3.IBucket;
 import software.amazon.awscdk.services.secretsmanager.ISecret;
 import software.amazon.awscdk.services.sns.ITopic;
 import software.amazon.awscdk.services.sns.Topic;
-import software.amazon.awscdk.services.sns.subscriptions.SqsSubscription;
-import software.amazon.awscdk.services.sqs.Queue;
 import software.constructs.Construct;
 
 public class DataStack extends Stack {

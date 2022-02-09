@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-01-initial-creating-products-table
+      author: Timur
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_url
+                  type: varchar(200)
+                  constraints:
+                    nullable: true

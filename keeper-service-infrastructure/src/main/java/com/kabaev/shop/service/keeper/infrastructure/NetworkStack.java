@@ -23,4 +23,5 @@ public class NetworkStack extends Stack {
     public Vpc getVpc() {
         return vpc;
     }
+
 }
