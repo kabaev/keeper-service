@@ -8,18 +8,11 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
-@Table
+@Table(name = "products")
 public class Product {
 
     @Id
-    @SequenceGenerator(
-            name = "product_sequence",
-            sequenceName = "product_sequence"
-    )
-    @GeneratedValue(
-            generator = "product_sequence",
-            strategy = GenerationType.SEQUENCE
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
     private String name;
