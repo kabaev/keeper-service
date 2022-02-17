@@ -21,4 +21,5 @@ public class ExceptionResponseDto {
         this.message = message;
         this.timestamp = timestamp;
     }
+
 }

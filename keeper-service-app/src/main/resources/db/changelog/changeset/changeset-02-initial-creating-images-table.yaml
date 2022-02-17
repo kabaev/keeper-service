@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: changeset-01-initial-creating-products-table
+      id: changeset-02-initial-creating-images-table
       author: Timur
       changes:
         - createTable:
-            tableName: products
+            tableName: images
             columns:
               - column:
                   name: id
@@ -14,22 +14,17 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: code
+                  name: uri
                   type: varchar(200)
                   constraints:
                     nullable: false
               - column:
-                  name: name
+                  name: key
                   type: varchar(200)
                   constraints:
                     nullable: false
               - column:
-                  name: description
-                  type: varchar(200)
+                  name: product_id
+                  type: bigint
                   constraints:
-                    nullable: false
-              - column:
-                  name: price
-                  type: decimal
-                  constraints:
-                    nullable: false
+                    foreignKeyName: product_id

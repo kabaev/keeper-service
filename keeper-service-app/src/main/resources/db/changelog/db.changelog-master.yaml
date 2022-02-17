@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/changeset-01-initial-creating-products-table.yaml
+  - include:
+      file: db/changelog/changeset/changeset-02-initial-creating-images-table.yaml
