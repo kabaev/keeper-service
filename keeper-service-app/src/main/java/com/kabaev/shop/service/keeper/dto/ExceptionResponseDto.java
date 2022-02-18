@@ -1,4 +1,4 @@
-package com.kabaev.shop.service.keeper.domain;
+package com.kabaev.shop.service.keeper.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
