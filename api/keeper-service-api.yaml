@@ -4,51 +4,52 @@ info:
   description: Keeper Service is used to work with Products
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8081/api/v1/'
+  - url: 'http://localhost:8080'
 
 paths:
 
-  /products:
+  /api/v1/products:
 
     get:
       summary: Returns all products
+      tags:
+        - ProductController
       responses:
         '200':
           description: Successfully returned products
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-      tags:
-        - ProductController
+                $ref: '#/components/schemas/ProductDtoList'
 
     post:
-      summary: Adds the product
-      parameters:
-        - name: product
-          description: The product to add
-          in: query
-          required: true
-          schema:
-            type: object
+      summary: Adds a product
+      tags:
+        - ProductController
+      requestBody:
+        $ref: '#/components/requestBodies/AddProductRequestDto'
       responses:
         '200':
           description: Successfully added product
           content:
             application/json:
               schema:
-                type: object
-      tags:
-        - ProductController
+                $ref: '#/components/responses/AddProductResponseDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ExceptionResponseDto'
 
-  /products/{productId}:
+  /api/v1/products/{code}:
 
     get:
-      summary: Returns the product with given productId
+      summary: Returns product with given code
+      tags:
+        - ProductController
       parameters:
-        - name: productId
+        - name: code
           in: path
           required: true
           schema:
@@ -59,14 +60,20 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-      tags:
-        - ProductController
+                $ref: '#/components/schemas/ProductDto'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ExceptionResponseDto'
 
     delete:
-      summary: Deletes the product with given productId
+      summary: Delete product with given code
+      tags:
+        - ProductController
       parameters:
-        - name: productId
+        - name: code
           in: path
           required: true
           schema:
@@ -78,135 +85,202 @@ paths:
             application/json:
               schema:
                 type: boolean
-      tags:
-        - ProductController
-
-    put:
-      summary: Updates the product with given productId
-      parameters:
-        - name: productId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully updated product
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/responses/ExceptionResponseDto'
+
+
+  /api/v1/products/{productCode}/image:
+
+    post:
+      summary: Adds an image for the product with given code
       tags:
         - ProductController
-
-  /products/{productCode}:
-
-    get:
-      summary: Returns list of products with given productCode
       parameters:
         - name: productCode
           in: path
           required: true
           schema:
             type: string
-      responses:
-        '200':
-          description: Successfully returned list of products
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-      tags:
-        - ProductController
-
-    delete:
-      summary: Deletes list of products with given productCode
-      parameters:
-        - name: productCode
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully deleted list of products
-          content:
-            application/json:
-              schema:
-                type: boolean
-      tags:
-        - ProductController
-
-    put:
-      summary: Updates list of products with given productCode
-      parameters:
-        - name: productCode
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: product
-          description: The product to update
+        - name: image
           in: query
           required: true
           schema:
             type: object
       responses:
         '200':
-          description: Successfully updated list of products
+          description: Successfully added product
           content:
             application/json:
               schema:
+                $ref: '#/components/responses/AddProductResponseDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ExceptionResponseDto'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ExceptionResponseDto'
+
+components:
+
+  # REUSABLE SCHEMAS
+  schemas:
+
+    ImageDto:
+      type: object
+      required:
+        - uri
+        - key
+      properties:
+        uri:
+          description: Image URI
+          type: string
+        key:
+          description: Image key
+          type: string
+
+    ImageDtoList:
+      type: object
+      required:
+        - imageDtoList
+      properties:
+        imageDtoList:
+          description: List of all Image DTOs for a specific product
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageDto'
+
+    ProductDto:
+      type: object
+      required:
+        - code
+        - name
+        - description
+        - price
+        - imageUriList
+      properties:
+        code:
+          description: Product code
+          type: string
+        name:
+          description: Product name
+          type: string
+        description:
+          description: Product description
+          type: string
+        price:
+          description: Product price
+          type: integer
+        imageUriList:
+          description: List of Image URIs for a specific product
+          type: array
+          items:
+            type: string
+
+    ProductDtoList:
+      type: object
+      required:
+        - productDtoList
+      properties:
+        productDtoList:
+          description: List of Product DTOs
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+
+
+  # REUSABLE RESPONSES
+  responses:
+    ExceptionResponseDto:
+      description: Unified Exception Response DTO
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+              - timestamp
+            properties:
+              message:
+                description: Exception message
+                type: string
+              timestamp:
+                description: Exception timestamp
+                type: string
+                format: 'date-time'
+              stackTrace:
+                description: Exception stacktrace (only in case of unexpected exception)
                 type: array
                 items:
-                  type: object
-      tags:
-        - ProductController
+                  type: string
 
-  /products/list:
-
-    post:
-      summary: Adds list of products
-      parameters:
-        - name: productList
-          description: The list of products to add
-          in: query
-          required: true
+    AddProductResponseDto:
+      description: Response DTO in case of successful adding product
+      content:
+        application/json:
           schema:
-            type: array
-            items:
-              type: object
-      responses:
-        '200':
-          description: Successfully added list of products
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-      tags:
-        - ProductController
+            type: object
+            required:
+              - code
+              - name
+              - description
+              - price
+            properties:
+              code:
+                description: Product code
+                type: string
+                example: 7dd7360f-af3f-42a2-8615-b11dc7b69b2b
+              name:
+                description: Product name
+                type: string
+                example: AMD Ryzen 7 PRO 5750G, SocketAM4, OEM
+              description:
+                description: Product description
+                type: string
+                example: General Specifications
+              price:
+                description: Product price
+                type: integer
+                example: 500
 
-    delete:
-      summary: Deletes list of products
-      parameters:
-        - name: productList
-          description: The list of products to delete
-          in: query
-          required: true
+  # REUSABLE REQUEST BODIES
+  requestBodies:
+    AddProductRequestDto:
+      description: Request to add a new product
+      content:
+        application/json:
           schema:
-            type: array
-            items:
-              type: object
-      responses:
-        '200':
-          description: Successfully deleted list of products
-          content:
-            application/json:
-              schema:
-                type: boolean
-      tags:
-        - ProductController
+            type: object
+            required:
+              - name
+              - description
+              - price
+            properties:
+              name:
+                description: Product name
+                type: string
+                nullable: false
+                minLength: 10
+                maxLength: 100
+                example: AMD Ryzen 7 PRO 5750G, SocketAM4, OEM
+              description:
+                description: Product description
+                type: string
+                nullable: false
+                minLength: 10
+                maxLength: 1000
+                example: General Specifications
+              price:
+                description: Product price
+                type: integer
+                nullable: false
+                example: 500

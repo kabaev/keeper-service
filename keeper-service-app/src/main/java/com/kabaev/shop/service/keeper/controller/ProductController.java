@@ -39,69 +39,69 @@ public class ProductController {
         this.s3ImageStore = s3ImageStore;
     }
 
-    @GetMapping
-    public ProductDtoList getAllProducts() {
-        log.debug("Returning all products");
-        List<Product> products = productRepository.findAll();
-        List<ProductDto> productDtoList = products.stream()
-                .map(ProductDto::new)
-                .collect(Collectors.toList());
-        return new ProductDtoList(productDtoList);
-    }
+//    @GetMapping
+//    public ProductDtoList getAllProducts() {
+//        log.debug("Returning all products");
+//        List<Product> products = productRepository.findAll();
+//        List<ProductDto> productDtoList = products.stream()
+//                .map(ProductDto::new)
+//                .collect(Collectors.toList());
+//        return new ProductDtoList(productDtoList);
+//    }
 
-    @GetMapping("/{code}")
-    public ProductDto getProductDtoByCode(@PathVariable("code") String code) {
-        log.debug("Returning product with code = {}", code);
-        List<Product> products = productRepository.findAll();
-        Product product = productRepository.findByCode(code)
-                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
-        return new ProductDto(product);
-    }
+//    @GetMapping("/{code}")
+//    public ProductDto getProductDtoByCode(@PathVariable("code") String code) {
+//        log.debug("Returning product with code = {}", code);
+//        List<Product> products = productRepository.findAll();
+//        Product product = productRepository.findByCode(code)
+//                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
+//        return new ProductDto(product);
+//    }
 
-    @DeleteMapping("/{code}")
-    @Transactional
-    public boolean deleteProductByCode(@PathVariable("code") String code) {
-        log.debug("Deleting product with code = {}", code);
-        Product product = productRepository.findByCode(code)
-                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
-        List<Image> images = product.getImages();
-        if (images == null) {
-            return false;
-        }
-        images.stream()
-                .map(Image::getKey)
-                .forEach(s3ImageStore::deleteImageFromS3);
+//    @DeleteMapping("/{code}")
+//    @Transactional
+//    public boolean deleteProductByCode(@PathVariable("code") String code) {
+//        log.debug("Deleting product with code = {}", code);
+//        Product product = productRepository.findByCode(code)
+//                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
+//        List<Image> images = product.getImages();
+//        if (images == null) {
+//            return false;
+//        }
+//        images.stream()
+//                .map(Image::getKey)
+//                .forEach(s3ImageStore::deleteImageFromS3);
+//
+//        log.debug("Sending the product code to the topic: {}", code);
+//        snsPublisher.sendInTopic(product.getCode());
+//
+//        productRepository.delete(product);
+//        return true;
+//    }
 
-        log.debug("Sending the product code to the topic: {}", code);
-        snsPublisher.sendInTopic(product.getCode());
-
-        productRepository.delete(product);
-        return true;
-    }
-
-    @PostMapping
-    @Transactional
-    public AddProductResponseDto save(@Validated @RequestBody AddProductRequestDto requestDto) {
-        log.debug("Attempt to save a new product: {}", requestDto);
-        log.debug("Finding out whether the product exists in the database: {}", requestDto);
-        Optional<Product> productInDatabase = productRepository.findByName(requestDto.name());
-        if (productInDatabase.isPresent()) {
-            throw new ProductExistsException("Product with given name already exist: " + requestDto.name());
-        }
-
-        Product productToSave = new Product();
-        productToSave.setCode(generateUniqueIdentifier());
-        productToSave.setName(requestDto.name());
-        productToSave.setDescription(requestDto.description());
-        productToSave.setPrice(requestDto.price());
-
-        log.debug("Sending the product code to the topic: {}", productToSave.getCode());
-        snsPublisher.sendInTopic(productToSave.getCode());
-
-        Product saved = productRepository.save(productToSave);
-
-        return new AddProductResponseDto(saved);
-    }
+//    @PostMapping
+//    @Transactional
+//    public AddProductResponseDto save(@Validated @RequestBody AddProductRequestDto requestDto) {
+//        log.debug("Attempt to save a new product: {}", requestDto);
+//        log.debug("Finding out whether the product exists in the database: {}", requestDto);
+//        Optional<Product> productInDatabase = productRepository.findByName(requestDto.name());
+//        if (productInDatabase.isPresent()) {
+//            throw new ProductExistsException("Product with given name already exist: " + requestDto.name());
+//        }
+//
+//        Product productToSave = new Product();
+//        productToSave.setCode(generateUniqueIdentifier());
+//        productToSave.setName(requestDto.name());
+//        productToSave.setDescription(requestDto.description());
+//        productToSave.setPrice(requestDto.price());
+//
+//        log.debug("Sending the product code to the topic: {}", productToSave.getCode());
+//        snsPublisher.sendInTopic(productToSave.getCode());
+//
+//        Product saved = productRepository.save(productToSave);
+//
+//        return new AddProductResponseDto(saved);
+//    }
 
     @PostMapping(value = "/{productCode}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
