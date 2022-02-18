@@ -3,6 +3,9 @@ package com.kabaev.shop.service.keeper.controller;
 import com.kabaev.shop.service.keeper.domain.Image;
 import com.kabaev.shop.service.keeper.domain.Product;
 import com.kabaev.shop.service.keeper.dto.*;
+import com.kabaev.shop.service.keeper.exception.ImageUploadException;
+import com.kabaev.shop.service.keeper.exception.ProductExistsException;
+import com.kabaev.shop.service.keeper.exception.ProductNotFoundException;
 import com.kabaev.shop.service.keeper.repository.ProductRepository;
 import com.kabaev.shop.service.keeper.publisher.SnsPublisher;
 import com.kabaev.shop.service.keeper.store.S3ImageStore;
@@ -51,7 +54,7 @@ public class ProductController {
         log.debug("Returning product with code = {}", code);
         List<Product> products = productRepository.findAll();
         Product product = productRepository.findByCode(code)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with the code: " + code));
+                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
         return new ProductDto(product);
     }
 
@@ -60,7 +63,7 @@ public class ProductController {
     public boolean deleteProductByCode(@PathVariable("code") String code) {
         log.debug("Deleting product with code = {}", code);
         Product product = productRepository.findByCode(code)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with the code: " + code));
+                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
         List<Image> images = product.getImages();
         if (images == null) {
             return false;
@@ -83,7 +86,7 @@ public class ProductController {
         log.debug("Finding out whether the product exists in the database: {}", requestDto);
         Optional<Product> productInDatabase = productRepository.findByName(requestDto.name());
         if (productInDatabase.isPresent()) {
-            throw new IllegalArgumentException("There is a product with given name: " + requestDto.name());
+            throw new ProductExistsException("Product with given name already exist: " + requestDto.name());
         }
 
         Product productToSave = new Product();
@@ -102,16 +105,16 @@ public class ProductController {
 
     @PostMapping(value = "/{productCode}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
-    public ImageDto save(
+    public ImageDto upload(
             @PathVariable("productCode") String productCode,
             @RequestPart(name = "image") MultipartFile image) {
 
         if (image == null) {
-            throw new IllegalArgumentException("Image is not included in the request");
+            throw new ImageUploadException("Image is not included in the request");
         }
 
         Product product = productRepository.findByCode(productCode)
-                .orElseThrow(() -> new IllegalArgumentException("There is no product with the code: " + productCode));
+                .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + productCode));
 
         String imageKey = generateUniqueIdentifier();
         String imageUri = s3ImageStore.saveImageToS3(image, imageKey);
