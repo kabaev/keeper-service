@@ -20,4 +20,5 @@ jobs:
       - name: Package project
         run: |
           chmod +x mvnw
-          ./mvnw package 
+          docker-compose up -d
+          ./mvnw package -Dspring.profiles.active=test

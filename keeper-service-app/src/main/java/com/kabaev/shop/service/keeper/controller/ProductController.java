@@ -52,7 +52,6 @@ public class ProductController {
     @GetMapping("/{code}")
     public ProductDto getProductDtoByCode(@PathVariable("code") String code) {
         log.debug("Returning product with code = {}", code);
-        List<Product> products = productRepository.findAll();
         Product product = productRepository.findByCode(code)
                 .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
         return new ProductDto(product);
@@ -65,12 +64,11 @@ public class ProductController {
         Product product = productRepository.findByCode(code)
                 .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
         List<Image> images = product.getImages();
-        if (images == null) {
-            return false;
+        if (images != null) {
+            images.stream()
+                    .map(Image::getKey)
+                    .forEach(s3ImageStore::deleteImageFromS3);
         }
-        images.stream()
-                .map(Image::getKey)
-                .forEach(s3ImageStore::deleteImageFromS3);
 
         log.debug("Sending the product code to the topic: {}", code);
         snsPublisher.sendInTopic(product.getCode());
