@@ -35,7 +35,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           chmod +x mvnw
-          ./mvnw spring-boot:build-image -pl keeper-service-app -Dspring-boot.build-image.imageName=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          ./mvnw spring-boot:build-image -pl keeper-service-app -Dspring-boot.build-image.imageName=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -Dmaven.test.skip=true
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
           npm install -g aws-cdk
