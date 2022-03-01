@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: keeperdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+  localstack:
+    image: localstack/localstack:0.13.2
+    ports:
+      - "7001:4566"
+      - "17001:4571"
+    environment:
+      - SERVICES=s3,sns
+      - DATA_DIR=/data/localstack
+      - HOST_TMP_FOLDER=/tmp/localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - EAGER_SERVICE_LOADING=true
+
+  awsinit:
+    depends_on:
+      - localstack
+    build:
+      context: ../aws
