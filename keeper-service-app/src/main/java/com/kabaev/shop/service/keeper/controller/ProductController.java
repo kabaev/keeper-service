@@ -71,7 +71,7 @@ public class ProductController {
         }
 
         log.debug("Sending the product code to the topic: {}", code);
-        snsPublisher.sendInTopic(product.getCode());
+//        snsPublisher.sendInTopic(product.getCode());
 
         productRepository.delete(product);
         return true;
@@ -124,7 +124,7 @@ public class ProductController {
         Product saved = productRepository.saveAndFlush(product);
 
         log.debug("Sending the product code to the topic: {}", productCode);
-        snsPublisher.sendInTopic(productCode);
+//        snsPublisher.sendInTopic(productCode);
 
         return new ImageDto(imageToSave);
     }
