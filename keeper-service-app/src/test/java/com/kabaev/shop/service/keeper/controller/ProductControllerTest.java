@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kabaev.shop.service.keeper.domain.Product;
 import com.kabaev.shop.service.keeper.dto.ProductDto;
 import com.kabaev.shop.service.keeper.dto.ProductDtoList;
-import com.kabaev.shop.service.keeper.publisher.SnsPublisher;
 import com.kabaev.shop.service.keeper.repository.ProductRepository;
-import com.kabaev.shop.service.keeper.store.S3ImageStore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,31 +30,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProductControllerTest {
 
     private final ProductRepository productRepository;
-    private final S3ImageStore s3ImageStore;
-    private final SnsPublisher snsPublisher;
     private final MockMvc mockMvc;
     private final ObjectMapper mapper;
 
-    private Product product;
     private ProductDto productDto;
 
     @Autowired
     public ProductControllerTest(
             ProductRepository productRepository,
-            S3ImageStore s3ImageStore,
-            SnsPublisher snsPublisher,
             MockMvc mockMvc,
             ObjectMapper mapper) {
         this.productRepository = productRepository;
-        this.s3ImageStore = s3ImageStore;
-        this.snsPublisher = snsPublisher;
         this.mockMvc = mockMvc;
         this.mapper = mapper;
     }
 
     @BeforeEach
     void setUp() {
-        product = new Product();
+        Product product = new Product();
         product.setCode("7dd7360f-af3f-42a2-8615-b11dc7b69b2b");
         product.setName("AMD Ryzen 7 PRO 5750G, SocketAM4, OEM");
         product.setDescription("Product description");
@@ -70,10 +61,6 @@ class ProductControllerTest {
     @AfterEach
     void cleanUp() {
         productRepository.deleteAll();
-    }
-
-    @Test
-    void dummyTest() {
     }
 
     @Test
@@ -110,20 +97,19 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertEquals(
                         "There is no product with the code: " + code,
-                        result.getResolvedException().getMessage()
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()
                 ));
     }
 
-    @Test
-    void deleteProductByCode_DeleteProduct_IfProductWithCodeExist() throws Exception {
-        // given
-        String code = "7dd7360f-af3f-42a2-8615-b11dc7b69b2b";
-
-        // then
-        mockMvc.perform(delete("/api/v1/products/" + code))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    void deleteProductByCode_DeleteProduct_IfProductWithCodeExist() throws Exception {
+//        // given
+//        String code = "7dd7360f-af3f-42a2-8615-b11dc7b69b2b";
+//
+//        // then
+//        mockMvc.perform(delete("/api/v1/products/" + code))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void deleteProductByCode_ThrowException_IfProductWithCodeDoesNotExist() throws Exception {
@@ -135,7 +121,7 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertEquals(
                         "There is no product with the code: " + code,
-                        result.getResolvedException().getMessage()
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()
                 ));
     }
 
