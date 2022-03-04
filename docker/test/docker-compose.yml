@@ -16,7 +16,7 @@ services:
       - "7001:4566"
       - "17001:4571"
     environment:
-      - SERVICES=s3,sns
+      - SERVICES=s3,sns,sqs
       - DATA_DIR=/data/localstack
       - HOST_TMP_FOLDER=/tmp/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
