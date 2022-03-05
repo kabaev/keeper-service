@@ -23,4 +23,4 @@ jobs:
           cd ./docker/test
           docker-compose up -d
           cd ../../
-          ./mvnw package -Dspring.profiles.active=test
+          ./mvnw test -Dspring.profiles.active=test

@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -56,7 +55,7 @@ public class ExceptionHandlerController {
                 id, request.getRequestURL(), request.getMethod(), e);
         List<String> stackTrace = Arrays.stream(e.getStackTrace())
                 .map(Objects::toString)
-                .collect(Collectors.toList());
+                .toList();
         return new ResponseEntity<>(
                 new ExceptionResponseDto(
                         "Unexpected error: please contact support regarding incident " + id,

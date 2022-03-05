@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "api/v1/products")
@@ -45,7 +44,7 @@ public class ProductController {
         List<Product> products = productRepository.findAll();
         List<ProductDto> productDtoList = products.stream()
                 .map(ProductDto::new)
-                .collect(Collectors.toList());
+                .toList();
         return new ProductDtoList(productDtoList);
     }
 
@@ -71,7 +70,7 @@ public class ProductController {
         }
 
         log.debug("Sending the product code to the topic: {}", code);
-//        snsPublisher.sendInTopic(product.getCode());
+        snsPublisher.sendInTopic(product.getCode());
 
         productRepository.delete(product);
         return true;
@@ -121,10 +120,10 @@ public class ProductController {
         imageToSave.setKey(imageKey);
         imageToSave.setUri(imageUri);
         product.addImageToProduct(imageToSave);
-        Product saved = productRepository.saveAndFlush(product);
+        productRepository.saveAndFlush(product);
 
         log.debug("Sending the product code to the topic: {}", productCode);
-//        snsPublisher.sendInTopic(productCode);
+        snsPublisher.sendInTopic(productCode);
 
         return new ImageDto(imageToSave);
     }

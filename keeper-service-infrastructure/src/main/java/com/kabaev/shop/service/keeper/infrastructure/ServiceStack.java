@@ -85,7 +85,7 @@ public class ServiceStack extends Stack {
                                 "POSTGRES_HOST", dataStack.getPostgres().getDbInstanceEndpointAddress(),
                                 "POSTGRES_PORT", dataStack.getPostgres().getDbInstanceEndpointPort(),
                                 "POSTGRES_DATABASE", dataStack.getKeeperDatabaseName().getValueAsString(),
-                                "S3_REGION_NAME", getRegion(),
+                                "AWS_REGION_NAME", getRegion(),
                                 "S3_BUCKET_NAME", dataStack.getImagesStoreBucket().getBucketName(),
                                 "SNS_TOPIC_ARN", dataStack.getTopic().getTopicArn()
                         ))
