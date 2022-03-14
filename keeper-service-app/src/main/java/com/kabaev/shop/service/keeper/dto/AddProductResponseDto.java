@@ -9,7 +9,7 @@ public record AddProductResponseDto(
         String name,
         String description,
         BigDecimal price,
-        boolean isDeleted) {
+        boolean deleted) {
 
     public AddProductResponseDto(Product product) {
         this(

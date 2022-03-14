@@ -10,7 +10,7 @@ public record ProductDto(
         String name,
         String description,
         BigDecimal price,
-        boolean isDeleted,
+        boolean deleted,
         List<String> imageUriList) {
 
     public ProductDto(Product product) {
