@@ -166,6 +166,7 @@ components:
         - name
         - description
         - price
+        - isDeleted
         - imageUriList
       properties:
         code:
@@ -180,6 +181,9 @@ components:
         price:
           description: Product price
           type: integer
+        isDeleted:
+          description: Whether the Product is deleted
+          type: boolean
         imageUriList:
           description: List of Image URIs for a specific product
           type: array
@@ -234,6 +238,7 @@ components:
               - name
               - description
               - price
+              - isDeleted
             properties:
               code:
                 description: Product code
@@ -251,6 +256,10 @@ components:
                 description: Product price
                 type: integer
                 example: 500
+              isDeleted:
+                description: Whether the Product is deleted
+                type: boolean
+                example: false
 
   # REUSABLE REQUEST BODIES
   requestBodies:

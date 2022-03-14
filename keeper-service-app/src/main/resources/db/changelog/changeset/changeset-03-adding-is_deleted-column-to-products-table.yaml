@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: changeset-03-adding-is_deleted-column-to-products-table
+      author: Timur
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+
+

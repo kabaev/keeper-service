@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changeset/changeset-01-initial-creating-products-table.yaml
   - include:
       file: db/changelog/changeset/changeset-02-initial-creating-images-table.yaml
+  - include:
+      file: db/changelog/changeset/changeset-03-adding-is_deleted-column-to-products-table.yaml

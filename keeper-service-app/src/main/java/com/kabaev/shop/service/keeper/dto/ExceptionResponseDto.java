@@ -12,8 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 public class ExceptionResponseDto {
+
     private String message;
     private LocalDateTime timestamp;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> stackTrace;
 

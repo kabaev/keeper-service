@@ -4,6 +4,7 @@ import com.kabaev.shop.service.keeper.domain.Image;
 import com.kabaev.shop.service.keeper.domain.Product;
 import com.kabaev.shop.service.keeper.dto.*;
 import com.kabaev.shop.service.keeper.exception.ImageUploadException;
+import com.kabaev.shop.service.keeper.exception.ProductAlreadyDeletedException;
 import com.kabaev.shop.service.keeper.exception.ProductExistsException;
 import com.kabaev.shop.service.keeper.exception.ProductNotFoundException;
 import com.kabaev.shop.service.keeper.repository.ProductRepository;
@@ -62,17 +63,22 @@ public class ProductController {
         log.debug("Deleting product with code = {}", code);
         Product product = productRepository.findByCode(code)
                 .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
+        if (product.isDeleted()) {
+            throw new ProductAlreadyDeletedException("Product with given code is already deleted: " + code);
+        }
         List<Image> images = product.getImages();
         if (images != null) {
             images.stream()
                     .map(Image::getKey)
                     .forEach(s3ImageStore::deleteImageFromS3);
         }
+        product.getImages().clear();
 
         log.debug("Sending the product code to the topic: {}", code);
         snsPublisher.sendInTopic(product.getCode());
 
-        productRepository.delete(product);
+        product.setIsDeleted(true);
+        productRepository.saveAndFlush(product);
         return true;
     }
 
@@ -91,6 +97,7 @@ public class ProductController {
         productToSave.setName(requestDto.name());
         productToSave.setDescription(requestDto.description());
         productToSave.setPrice(requestDto.price());
+        productToSave.setIsDeleted(false);
 
         log.debug("Sending the product code to the topic: {}", productToSave.getCode());
         snsPublisher.sendInTopic(productToSave.getCode());

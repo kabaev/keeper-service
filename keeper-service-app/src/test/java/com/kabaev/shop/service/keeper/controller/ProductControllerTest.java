@@ -52,6 +52,7 @@ class ProductControllerTest {
         product.setName("AMD Ryzen 7 PRO 5750G, SocketAM4, OEM");
         product.setDescription("Product description");
         product.setPrice(BigDecimal.valueOf(500));
+        product.setIsDeleted(false);
 
         Product saved = productRepository.save(product);
 
