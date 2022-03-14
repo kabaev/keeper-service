@@ -2,6 +2,7 @@ package com.kabaev.shop.service.keeper.controller;
 
 import com.kabaev.shop.service.keeper.dto.ExceptionResponseDto;
 import com.kabaev.shop.service.keeper.exception.ImageUploadException;
+import com.kabaev.shop.service.keeper.exception.ProductAlreadyDeletedException;
 import com.kabaev.shop.service.keeper.exception.ProductExistsException;
 import com.kabaev.shop.service.keeper.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,15 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ExceptionResponseDto> handleProductNotFoundException(Exception e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(
+                new ExceptionResponseDto(e.getMessage(), LocalDateTime.now()),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(ProductAlreadyDeletedException.class)
+    public ResponseEntity<ExceptionResponseDto> handleProductAlreadyDeletedException(Exception e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(
                 new ExceptionResponseDto(e.getMessage(), LocalDateTime.now()),

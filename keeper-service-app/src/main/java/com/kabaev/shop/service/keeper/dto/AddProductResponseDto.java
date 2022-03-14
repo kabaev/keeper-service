@@ -8,14 +8,16 @@ public record AddProductResponseDto(
         String code,
         String name,
         String description,
-        BigDecimal price) {
+        BigDecimal price,
+        boolean isDeleted) {
 
     public AddProductResponseDto(Product product) {
         this(
                 product.getCode(),
                 product.getName(),
                 product.getDescription(),
-                product.getPrice()
+                product.getPrice(),
+                product.isDeleted()
         );
     }
 

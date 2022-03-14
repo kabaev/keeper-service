@@ -10,6 +10,7 @@ public record ProductDto(
         String name,
         String description,
         BigDecimal price,
+        boolean isDeleted,
         List<String> imageUriList) {
 
     public ProductDto(Product product) {
@@ -18,6 +19,7 @@ public record ProductDto(
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
+                product.isDeleted(),
                 product.getImageUriList()
         );
     }
