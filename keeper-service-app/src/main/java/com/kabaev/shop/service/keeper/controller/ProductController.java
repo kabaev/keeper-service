@@ -4,7 +4,7 @@ import com.kabaev.shop.service.keeper.domain.Image;
 import com.kabaev.shop.service.keeper.domain.Product;
 import com.kabaev.shop.service.keeper.dto.*;
 import com.kabaev.shop.service.keeper.exception.ImageUploadException;
-import com.kabaev.shop.service.keeper.exception.ProductAlreadyDeletedException;
+import com.kabaev.shop.service.keeper.exception.ProductStateDeletedException;
 import com.kabaev.shop.service.keeper.exception.ProductExistsException;
 import com.kabaev.shop.service.keeper.exception.ProductNotFoundException;
 import com.kabaev.shop.service.keeper.repository.ProductRepository;
@@ -64,7 +64,7 @@ public class ProductController {
         Product product = productRepository.findByCode(code)
                 .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + code));
         if (product.isDeleted()) {
-            throw new ProductAlreadyDeletedException("Product with given code is already deleted: " + code);
+            throw new ProductStateDeletedException("Product with given code is deleted: " + code);
         }
         List<Image> images = product.getImages();
         if (images != null) {
@@ -119,6 +119,10 @@ public class ProductController {
 
         Product product = productRepository.findByCode(productCode)
                 .orElseThrow(() -> new ProductNotFoundException("There is no product with the code: " + productCode));
+
+        if (product.isDeleted()) {
+            throw new ProductStateDeletedException("Product with given code is deleted: " + productCode);
+        }
 
         String imageKey = generateUniqueIdentifier();
         String imageUri = s3ImageStore.saveImageToS3(image, imageKey);
