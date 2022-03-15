@@ -17,7 +17,7 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-    private boolean isDeleted;
+    private boolean deleted;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
@@ -88,11 +88,11 @@ public class Product {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
-    public void setIsDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", isDeleted=" + isDeleted +
+                ", deleted=" + deleted +
                 ", images=" + images +
                 '}';
     }

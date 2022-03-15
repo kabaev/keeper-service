@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: products
             columns:
               - column:
-                  name: is_deleted
+                  name: deleted
                   type: boolean
                   constraints:
                     nullable: false

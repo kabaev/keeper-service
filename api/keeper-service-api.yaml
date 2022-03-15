@@ -166,7 +166,7 @@ components:
         - name
         - description
         - price
-        - isDeleted
+        - deleted
         - imageUriList
       properties:
         code:
@@ -181,7 +181,7 @@ components:
         price:
           description: Product price
           type: integer
-        isDeleted:
+        deleted:
           description: Whether the Product is deleted
           type: boolean
         imageUriList:
@@ -238,7 +238,7 @@ components:
               - name
               - description
               - price
-              - isDeleted
+              - deleted
             properties:
               code:
                 description: Product code
@@ -256,7 +256,7 @@ components:
                 description: Product price
                 type: integer
                 example: 500
-              isDeleted:
+              deleted:
                 description: Whether the Product is deleted
                 type: boolean
                 example: false
