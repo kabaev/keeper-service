@@ -42,8 +42,7 @@ public class Image {
     @Override
     public String toString() {
         return "Image{" +
-                "id=" + id +
-                ", uri='" + uri + '\'' +
+                "uri='" + uri + '\'' +
                 ", key='" + key + '\'' +
                 '}';
     }
