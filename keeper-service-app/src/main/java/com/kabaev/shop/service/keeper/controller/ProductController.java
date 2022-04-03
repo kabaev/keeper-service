@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,16 +42,19 @@ public class ProductController {
     }
 
     @GetMapping
-    public ProductDtoList getAllProducts() {
+    @RolesAllowed({"product_read"})
+    public ProductDtoList getAllProducts(Principal principal) {
         log.debug("Returning all products");
         List<Product> products = productRepository.findAll();
         List<ProductDto> productDtoList = products.stream()
                 .map(ProductDto::new)
                 .toList();
+        principal.getName();
         return new ProductDtoList(productDtoList);
     }
 
     @GetMapping("/{code}")
+    @RolesAllowed({"product_read"})
     public ProductDto getProductByCode(@PathVariable("code") String code) {
         log.debug("Returning product with code = {}", code);
         Product product = productRepository.findByCode(code)
@@ -59,6 +64,7 @@ public class ProductController {
 
     @PostMapping
     @Transactional
+    @RolesAllowed({"product_write"})
     public AddProductResponseDto save(@Validated @RequestBody AddProductRequestDto requestDto) {
         log.debug("Attempt to save a new product: {}", requestDto);
         log.debug("Finding out whether the product exists in the database: {}", requestDto);
@@ -84,6 +90,7 @@ public class ProductController {
 
     @PostMapping(value = "/{productCode}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
+    @RolesAllowed({"product_write"})
     public ImageDto upload(
             @PathVariable("productCode") String productCode,
             @RequestPart(name = "image") MultipartFile image) {
@@ -112,6 +119,7 @@ public class ProductController {
 
     @DeleteMapping("/{code}")
     @Transactional
+    @RolesAllowed({"product_write"})
     public boolean deleteProductByCode(@PathVariable("code") String code) {
         log.debug("Deleting product with code = {}", code);
         Product product = productRepository.findByCode(code)
